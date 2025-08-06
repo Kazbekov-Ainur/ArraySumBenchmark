@@ -1,0 +1,14 @@
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\bin\Debug\net8.0\ArraySumBenchmark.exe
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\bin\Debug\net8.0\ArraySumBenchmark.deps.json
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\bin\Debug\net8.0\ArraySumBenchmark.runtimeconfig.json
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\bin\Debug\net8.0\ArraySumBenchmark.dll
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\bin\Debug\net8.0\ArraySumBenchmark.pdb
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.AssemblyInfoInputs.cache
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.AssemblyInfo.cs
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.csproj.CoreCompileInputs.cache
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.dll
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\refint\ArraySumBenchmark.dll
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.pdb
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.genruntimeconfig.cache
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ref\ArraySumBenchmark.dll

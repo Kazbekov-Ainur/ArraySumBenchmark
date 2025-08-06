@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ArraySumBenchmark/1.0.0": {
+        "runtime": {
+          "ArraySumBenchmark.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ArraySumBenchmark/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
