@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 
-
 class Program
 {
     static void Main()
@@ -25,6 +24,8 @@ class Program
             long plinqTime = MeasureTime(() => ParallelSumWithPLINQ(array));
 
             Console.WriteLine($"| {size,14:N0} | {seqTime,17} | {threadTime,22} | {plinqTime,10} |");
+
+            ValidateResults(array);
         }
     }
 
@@ -43,29 +44,26 @@ class Program
         int threadCount = Environment.ProcessorCount;
         int chunkSize = array.Length / threadCount;
 
-        long[] partialSums = new long[threadCount];
-        Thread[] threads = new Thread[threadCount];
+        long total = 0;
+        var threads = new List<Thread>();
 
         for (int i = 0; i < threadCount; i++)
         {
-            int threadIndex = i;
-            threads[i] = new Thread(() =>
-            {
-                int start = threadIndex * chunkSize;
-                int end = (threadIndex == threadCount - 1)
-                    ? array.Length
-                    : start + chunkSize;
+            int start = i * chunkSize;
+            int end = (i == threadCount - 1) ? array.Length : start + chunkSize;
 
+            Thread thread = new Thread(() =>
+            {
                 long localSum = 0;
                 for (int j = start; j < end; j++)
                 {
                     localSum += array[j];
                 }
-
-                partialSums[threadIndex] = localSum;
+                Interlocked.Add(ref total, localSum);
             });
 
-            threads[i].Start();
+            threads.Add(thread);
+            thread.Start();
         }
 
         foreach (Thread thread in threads)
@@ -73,7 +71,7 @@ class Program
             thread.Join();
         }
 
-        return partialSums.Sum();
+        return total;
     }
 
     static long ParallelSumWithPLINQ(int[] array)
@@ -95,7 +93,7 @@ class Program
     static long MeasureTime(Func<long> action)
     {
         var sw = Stopwatch.StartNew();
-        action();
+        long result = action();
         sw.Stop();
         return sw.ElapsedMilliseconds;
     }
@@ -105,5 +103,22 @@ class Program
         Console.WriteLine($"ОС: {Environment.OSVersion}");
         Console.WriteLine($"Процессор: {Environment.ProcessorCount} ядер");
         Console.WriteLine($"Версия .NET: {Environment.Version}");
+    }
+
+    static void ValidateResults(int[] array)
+    {
+        long seq = SequentialSum(array);
+        long thread = ParallelSumWithThreads(array);
+        long plinq = ParallelSumWithPLINQ(array);
+
+        if (seq != thread || seq != plinq)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\nОшибка! Разные суммы для массива {array.Length}:");
+            Console.WriteLine($"Последовательная: {seq}");
+            Console.WriteLine($"Потоки: {thread}");
+            Console.WriteLine($"PLINQ: {plinq}");
+            Console.ResetColor();
+        }
     }
 }

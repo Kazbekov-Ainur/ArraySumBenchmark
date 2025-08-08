@@ -12,3 +12,4 @@ C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\Arr
 C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.pdb
 C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.genruntimeconfig.cache
 C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ref\ArraySumBenchmark.dll
+C:\Users\Казбеков Айнур\Desktop\Otus\Homework\ArraySumBenchmark\ArraySumBenchmark\obj\Debug\net8.0\ArraySumBenchmark.sourcelink.json
