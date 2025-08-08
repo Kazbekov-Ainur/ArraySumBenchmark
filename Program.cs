@@ -6,26 +6,31 @@ class Program
     {
         Console.WriteLine("Многопоточный сумматор массивов");
         Console.WriteLine("===============================");
-
         PrintSystemInfo();
 
         int[] sizes = { 100_000, 1_000_000, 10_000_000 };
 
         Console.WriteLine("\nРезультаты замеров времени (мс):");
-        Console.WriteLine("| Размер массива | Последовательный  | Параллельный (Thread)  | PLINQ      |");
-        Console.WriteLine("|----------------|-------------------|------------------------|------------|");
+        Console.WriteLine("| Размер массива | Последовательный | Параллельный (Thread) | PLINQ      |");
+        Console.WriteLine("|----------------|------------------|------------------------|------------|");
 
         foreach (int size in sizes)
         {
             int[] array = GenerateRandomArray(size);
 
-            long seqTime = MeasureTime(() => SequentialSum(array));
-            long threadTime = MeasureTime(() => ParallelSumWithThreads(array));
-            long plinqTime = MeasureTime(() => ParallelSumWithPLINQ(array));
+            WarmUpMethods(array);
 
-            Console.WriteLine($"| {size,14:N0} | {seqTime,17} | {threadTime,22} | {plinqTime,10} |");
+            if (!ValidateResults(array))
+            {
+                Console.WriteLine("Остановка из-за ошибки валидации");
+                return;
+            }
 
-            ValidateResults(array);
+            long seqTime = MeasureTime(() => SequentialSum(array), 5);
+            long threadTime = MeasureTime(() => ParallelSumWithThreads(array), 5);
+            long plinqTime = MeasureTime(() => ParallelSumWithPLINQ(array), 5);
+
+            Console.WriteLine($"| {size,14:N0} | {seqTime,16} | {threadTime,22} | {plinqTime,10} |");
         }
     }
 
@@ -43,35 +48,35 @@ class Program
     {
         int threadCount = Environment.ProcessorCount;
         int chunkSize = array.Length / threadCount;
-
-        long total = 0;
-        var threads = new List<Thread>();
+        long[] partialSums = new long[threadCount];
+        Thread[] threads = new Thread[threadCount];
 
         for (int i = 0; i < threadCount; i++)
         {
-            int start = i * chunkSize;
-            int end = (i == threadCount - 1) ? array.Length : start + chunkSize;
-
-            Thread thread = new Thread(() =>
+            int threadIndex = i;
+            threads[i] = new Thread(() =>
             {
                 long localSum = 0;
+                int start = threadIndex * chunkSize;
+                int end = (threadIndex == threadCount - 1)
+                    ? array.Length
+                    : start + chunkSize;
+
                 for (int j = start; j < end; j++)
                 {
                     localSum += array[j];
                 }
-                Interlocked.Add(ref total, localSum);
+                partialSums[threadIndex] = localSum;
             });
-
-            threads.Add(thread);
-            thread.Start();
+            threads[i].Start();
         }
 
-        foreach (Thread thread in threads)
+        foreach (var thread in threads)
         {
             thread.Join();
         }
 
-        return total;
+        return partialSums.Sum();
     }
 
     static long ParallelSumWithPLINQ(int[] array)
@@ -90,12 +95,27 @@ class Program
         return array;
     }
 
-    static long MeasureTime(Func<long> action)
+    static long MeasureTime(Func<long> action, int iterations)
     {
-        var sw = Stopwatch.StartNew();
-        long result = action();
-        sw.Stop();
-        return sw.ElapsedMilliseconds;
+        // Прогрев
+        action();
+
+        Stopwatch sw = new Stopwatch();
+        long minTime = long.MaxValue;
+
+        for (int i = 0; i < iterations; i++)
+        {
+            sw.Restart();
+            long result = action();
+            sw.Stop();
+
+            // Защита от оптимизации
+            if (result == 0) throw new InvalidOperationException();
+
+            minTime = Math.Min(minTime, sw.ElapsedMilliseconds);
+        }
+
+        return minTime;
     }
 
     static void PrintSystemInfo()
@@ -103,9 +123,17 @@ class Program
         Console.WriteLine($"ОС: {Environment.OSVersion}");
         Console.WriteLine($"Процессор: {Environment.ProcessorCount} ядер");
         Console.WriteLine($"Версия .NET: {Environment.Version}");
+        Console.WriteLine($"Режим: {(Environment.Is64BitProcess ? "x64" : "x86")}");
     }
 
-    static void ValidateResults(int[] array)
+    static void WarmUpMethods(int[] array)
+    {
+        SequentialSum(array);
+        ParallelSumWithThreads(array);
+        ParallelSumWithPLINQ(array);
+    }
+
+    static bool ValidateResults(int[] array)
     {
         long seq = SequentialSum(array);
         long thread = ParallelSumWithThreads(array);
@@ -114,11 +142,13 @@ class Program
         if (seq != thread || seq != plinq)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\nОшибка! Разные суммы для массива {array.Length}:");
+            Console.WriteLine($"\nОшибка валидации для размера {array.Length}:");
             Console.WriteLine($"Последовательная: {seq}");
             Console.WriteLine($"Потоки: {thread}");
             Console.WriteLine($"PLINQ: {plinq}");
             Console.ResetColor();
+            return false;
         }
+        return true;
     }
 }
